@@ -91,11 +91,11 @@ export function EnergyDemandChart() {
         
         <div className="text-center p-3 rounded-lg bg-muted/50">
           <div className="text-2xl font-bold text-green-600">
-            {energyData.renewable.percentage}%
+            {formatNumber(energyData.renewable.percentage, 2)}%
           </div>
           <div className="text-sm text-muted-foreground">Renewable</div>
           <div className="text-xs text-muted-foreground">
-            {formatNumber(energyData.renewable.total)} MW
+            {formatNumber(energyData.renewable.total, 2)} MW
           </div>
         </div>
       </div>
@@ -163,21 +163,21 @@ export function EnergyDemandChart() {
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center">
             <div className="text-lg font-semibold text-yellow-600">
-              {formatNumber(energyData.renewable.solar)}
+              {formatNumber(energyData.renewable.solar, 2)}
             </div>
             <div className="text-xs text-muted-foreground">Solar MW</div>
           </div>
           
           <div className="text-center">
             <div className="text-lg font-semibold text-blue-600">
-              {formatNumber(energyData.renewable.wind)}
+              {formatNumber(energyData.renewable.wind, 2)}
             </div>
             <div className="text-xs text-muted-foreground">Wind MW</div>
           </div>
           
           <div className="text-center">
             <div className="text-lg font-semibold text-cyan-600">
-              {formatNumber(energyData.renewable.hydro)}
+              {formatNumber(energyData.renewable.hydro, 2)}
             </div>
             <div className="text-xs text-muted-foreground">Hydro MW</div>
           </div>

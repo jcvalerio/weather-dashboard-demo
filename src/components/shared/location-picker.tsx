@@ -27,7 +27,8 @@ export function LocationPicker() {
     } else {
       setShowResults(false);
     }
-  }, [debouncedQuery, locationSearch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery]); // locationSearch intentionally excluded to prevent infinite loop
 
   // Set location from geolocation
   useEffect(() => {

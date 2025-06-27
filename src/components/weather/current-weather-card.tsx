@@ -84,15 +84,38 @@ export function CurrentWeatherCard() {
 
   if (error || !weather) {
     return (
-      <Card className="p-6 h-full flex items-center justify-center">
-        <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground mb-4">
-            {error ? 'Failed to load weather data' : 'No location selected'}
-          </p>
-          <Button onClick={() => refetch()} variant="outline" size="sm">
-            Try Again
+      <Card className="p-6 h-full">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm font-medium text-muted-foreground">
+              Weather Data
+            </span>
+          </div>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="w-8 h-8"
+            onClick={() => refetch()}
+          >
+            <RefreshCw className="w-4 h-4" />
           </Button>
+        </div>
+        
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <AlertCircle className="w-12 h-12 text-orange-500 mx-auto mb-3" />
+            <p className="text-sm font-medium mb-2">
+              {error ? 'Failed to load weather data' : 'No location selected'}
+            </p>
+            <p className="text-xs text-muted-foreground mb-4">
+              {error ? 'Check your connection and try again' : 'Please select a location'}
+            </p>
+            <Button onClick={() => refetch()} variant="outline" size="sm">
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Try Again
+            </Button>
+          </div>
         </div>
       </Card>
     );

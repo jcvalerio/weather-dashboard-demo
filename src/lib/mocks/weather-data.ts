@@ -26,7 +26,7 @@ export const mockCurrentWeather: WeatherData = {
     hourly: Array.from({ length: 24 }, (_, i) => ({
       time: addHours(now, i).toISOString(),
       temperature: 22 + Math.sin(i / 4) * 5,
-      precipitation: i > 12 && i < 16 ? 20 + Math.random() * 30 : 0,
+      precipitation: i > 12 && i < 16 ? 20 + Math.random() * 30 : Math.random() * 10,
       condition: i > 12 && i < 16 ? 'rainy' : 'partly-cloudy',
       icon: i > 12 && i < 16 ? '10d' : '02d',
     })),

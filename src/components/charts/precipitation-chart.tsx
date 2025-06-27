@@ -30,12 +30,19 @@ export function PrecipitationChart() {
 
   if (error || !weather) {
     return (
-      <Card className="p-6 flex items-center justify-center">
-        <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground">
-            No precipitation data available
-          </p>
+      <Card className="p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <CloudRain className="w-5 h-5 text-blue-500" />
+          <h3 className="text-lg font-semibold">Precipitation Forecast</h3>
+        </div>
+        
+        <div className="flex items-center justify-center h-32">
+          <div className="text-center">
+            <AlertCircle className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground">
+              No precipitation data available
+            </p>
+          </div>
         </div>
       </Card>
     );

@@ -45,12 +45,24 @@ export function WeatherForecastCard() {
 
   if (error || !weather) {
     return (
-      <Card className="p-6 h-full flex items-center justify-center">
-        <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground">
-            {error ? 'Failed to load forecast data' : 'No location selected'}
-          </p>
+      <Card className="p-6 h-full">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <Clock className="w-5 h-5" />
+            <h3 className="text-lg font-semibold">24-Hour Forecast</h3>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <AlertCircle className="w-12 h-12 text-orange-500 mx-auto mb-3" />
+            <p className="text-sm font-medium mb-2">
+              {error ? 'Failed to load forecast data' : 'No location selected'}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {error ? 'Check your connection and try again' : 'Please select a location'}
+            </p>
+          </div>
         </div>
       </Card>
     );

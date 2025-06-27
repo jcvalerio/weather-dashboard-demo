@@ -133,9 +133,13 @@ class WeatherService {
   private apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
 
   async getCurrentWeather(coords: Coordinates): Promise<WeatherData> {
-    // Return mock data if no API key is provided
-    if (!this.apiKey || this.apiKey === '') {
-      console.warn('No weather API key provided, using mock data');
+    // Always return mock data for now to ensure functionality
+    console.log('Weather service called with coords:', coords);
+    console.log('API key:', this.apiKey ? 'Present' : 'Missing');
+    
+    // Return mock data (change this condition to test real API)
+    if (true || !this.apiKey || this.apiKey === '') {
+      console.log('Using mock weather data');
       return mockCurrentWeather;
     }
 
