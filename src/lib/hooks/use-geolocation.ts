@@ -21,7 +21,7 @@ export function useGeolocation(options: GeolocationOptions = {}) {
   });
 
   const getCurrentPosition = useCallback(() => {
-    if (!navigator.geolocation) {
+    if (typeof navigator === 'undefined' || !navigator.geolocation) {
       setState(prev => ({
         ...prev,
         error: 'Geolocation is not supported by this browser',
@@ -82,6 +82,6 @@ export function useGeolocation(options: GeolocationOptions = {}) {
   return {
     ...state,
     getCurrentPosition,
-    isSupported: 'geolocation' in navigator,
+    isSupported: typeof navigator !== 'undefined' && 'geolocation' in navigator,
   };
 }

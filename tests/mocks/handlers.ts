@@ -32,7 +32,7 @@ export const handlers = [
     
     const results = createMockLocationSearchResults()
     const filtered = results.filter(location =>
-      location.name.toLowerCase().includes(query.toLowerCase())
+      location.city.toLowerCase().includes(query.toLowerCase())
     )
     
     return HttpResponse.json(filtered)

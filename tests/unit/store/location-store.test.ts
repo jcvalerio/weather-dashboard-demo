@@ -23,130 +23,117 @@ describe('Location Store', () => {
     // Reset the store state
     const { result } = renderHook(() => useLocationStore())
     act(() => {
-      result.current.setSelectedLocation(null)
+      result.current.clearLocation()
     })
   })
 
   it('should have initial state', () => {
     const { result } = renderHook(() => useLocationStore())
     
-    expect(result.current.selectedLocation).toBe(null)
-    expect(result.current.isLoading).toBe(false)
+    expect(result.current.coordinates).toBe(null)
+    expect(result.current.locationName).toBe(null)
   })
 
-  it('should set selected location', () => {
+  it('should set location with coordinates', () => {
     const { result } = renderHook(() => useLocationStore())
     
-    const mockLocation = {
-      id: 'san-francisco-ca-us',
-      name: 'San Francisco',
-      region: 'California',
-      country: 'United States',
+    const mockCoordinates = {
       lat: 37.7749,
       lon: -122.4194,
-      display_name: 'San Francisco, California, United States',
     }
 
     act(() => {
-      result.current.setSelectedLocation(mockLocation)
+      result.current.setLocation(mockCoordinates, 'San Francisco')
     })
 
-    expect(result.current.selectedLocation).toEqual(mockLocation)
+    expect(result.current.coordinates).toEqual(mockCoordinates)
+    expect(result.current.locationName).toBe('San Francisco')
   })
 
-  it('should set loading state', () => {
+  it('should set location without name', () => {
     const { result } = renderHook(() => useLocationStore())
     
-    expect(result.current.isLoading).toBe(false)
+    const mockCoordinates = {
+      lat: 40.7128,
+      lon: -74.0060,
+    }
 
     act(() => {
-      result.current.setLoading(true)
+      result.current.setLocation(mockCoordinates)
     })
 
-    expect(result.current.isLoading).toBe(true)
-
-    act(() => {
-      result.current.setLoading(false)
-    })
-
-    expect(result.current.isLoading).toBe(false)
+    expect(result.current.coordinates).toEqual(mockCoordinates)
+    expect(result.current.locationName).toBe(null)
   })
 
   it('should clear location', () => {
     const { result } = renderHook(() => useLocationStore())
     
-    const mockLocation = {
-      id: 'test-location',
-      name: 'Test Location',
-      region: 'Test Region',
-      country: 'Test Country',
-      lat: 0,
-      lon: 0,
-      display_name: 'Test Location, Test Region, Test Country',
+    const mockCoordinates = {
+      lat: 37.7749,
+      lon: -122.4194,
     }
 
     act(() => {
-      result.current.setSelectedLocation(mockLocation)
+      result.current.setLocation(mockCoordinates, 'Test Location')
     })
 
-    expect(result.current.selectedLocation).toEqual(mockLocation)
+    expect(result.current.coordinates).toEqual(mockCoordinates)
+    expect(result.current.locationName).toBe('Test Location')
 
     act(() => {
-      result.current.setSelectedLocation(null)
+      result.current.clearLocation()
     })
 
-    expect(result.current.selectedLocation).toBe(null)
+    expect(result.current.coordinates).toBe(null)
+    expect(result.current.locationName).toBe(null)
   })
 
   it('should persist state across multiple hook instances', () => {
     const { result: result1 } = renderHook(() => useLocationStore())
     const { result: result2 } = renderHook(() => useLocationStore())
     
-    const mockLocation = {
-      id: 'london-gb',
-      name: 'London',
-      region: 'England',
-      country: 'United Kingdom',
+    const mockCoordinates = {
       lat: 51.5074,
       lon: -0.1278,
-      display_name: 'London, England, United Kingdom',
     }
 
     act(() => {
-      result1.current.setSelectedLocation(mockLocation)
+      result1.current.setLocation(mockCoordinates, 'London')
     })
 
     // Both instances should have the same state
-    expect(result1.current.selectedLocation).toEqual(mockLocation)
-    expect(result2.current.selectedLocation).toEqual(mockLocation)
+    expect(result1.current.coordinates).toEqual(mockCoordinates)
+    expect(result1.current.locationName).toBe('London')
+    expect(result2.current.coordinates).toEqual(mockCoordinates)
+    expect(result2.current.locationName).toBe('London')
   })
 
-  it('should handle loading state independently', () => {
+  it('should handle coordinate updates', () => {
     const { result } = renderHook(() => useLocationStore())
     
-    const mockLocation = {
-      id: 'tokyo-jp',
-      name: 'Tokyo',
-      region: 'Tokyo',
-      country: 'Japan',
+    const firstCoordinates = {
       lat: 35.6762,
       lon: 139.6503,
-      display_name: 'Tokyo, Tokyo, Japan',
+    }
+
+    const secondCoordinates = {
+      lat: 48.8566,
+      lon: 2.3522,
     }
 
     act(() => {
-      result.current.setLoading(true)
-      result.current.setSelectedLocation(mockLocation)
+      result.current.setLocation(firstCoordinates, 'Tokyo')
     })
 
-    expect(result.current.isLoading).toBe(true)
-    expect(result.current.selectedLocation).toEqual(mockLocation)
+    expect(result.current.coordinates).toEqual(firstCoordinates)
+    expect(result.current.locationName).toBe('Tokyo')
 
     act(() => {
-      result.current.setLoading(false)
+      result.current.setLocation(secondCoordinates, 'Paris')
     })
 
-    expect(result.current.isLoading).toBe(false)
-    expect(result.current.selectedLocation).toEqual(mockLocation)
+    expect(result.current.coordinates).toEqual(secondCoordinates)
+    expect(result.current.locationName).toBe('Paris')
   })
 })
