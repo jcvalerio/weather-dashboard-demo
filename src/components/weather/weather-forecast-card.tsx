@@ -43,7 +43,7 @@ export function WeatherForecastCard() {
     );
   }
 
-  if (error || !weather) {
+  if (error || !weather || !weather.forecast) {
     return (
       <Card className="p-6 h-full">
         <div className="flex items-center justify-between mb-6">
@@ -113,12 +113,18 @@ export function WeatherForecastCard() {
             <Tooltip 
               content={({ active, payload, label }) => {
                 if (active && payload && payload.length) {
+                  const data = payload[0].payload;
                   return (
                     <div className="bg-popover p-3 rounded-lg border shadow-lg">
                       <p className="text-sm font-medium">{label}</p>
                       <p className="text-sm text-muted-foreground">
                         Temperature: {formatTemperature(payload[0].value as number)}
                       </p>
+                      {data.precipitation > 0 && (
+                        <p className="text-sm text-blue-500">
+                          Precipitation: {data.precipitation.toFixed(2)}%
+                        </p>
+                      )}
                     </div>
                   );
                 }
@@ -152,7 +158,7 @@ export function WeatherForecastCard() {
             </div>
             {hour.precipitation > 0 && (
               <div className="text-xs text-blue-500">
-                {hour.precipitation}%
+                {hour.precipitation.toFixed(2)}%
               </div>
             )}
           </div>
@@ -186,7 +192,7 @@ export function WeatherForecastCard() {
               <div className="flex items-center gap-4">
                 {day.precipitation > 0 && (
                   <div className="text-xs text-blue-500">
-                    {Math.round(day.precipitation)}%
+                    {day.precipitation.toFixed(2)}%
                   </div>
                 )}
                 <div className="text-sm font-medium">

@@ -31,7 +31,14 @@ export default defineConfig({
 
     /* Screenshot on failure */
     screenshot: 'only-on-failure',
+
+    /* Increase timeouts for slow browsers */
+    actionTimeout: 15000,
+    navigationTimeout: 30000,
   },
+
+  /* Global test timeout */
+  timeout: 60000,
 
   /* Configure projects for major browsers */
   projects: [

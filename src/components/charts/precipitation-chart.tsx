@@ -28,7 +28,7 @@ export function PrecipitationChart() {
     );
   }
 
-  if (error || !weather) {
+  if (error || !weather || !weather.forecast) {
     return (
       <Card className="p-6">
         <div className="flex items-center gap-2 mb-4">

@@ -63,7 +63,7 @@ export function CurrentWeatherCard() {
     );
   }
 
-  if (error || !weather) {
+  if (error || !weather || !weather.current || !weather.location) {
     return (
       <Card className="p-6 h-full">
         <div className="flex items-center justify-between mb-4">
