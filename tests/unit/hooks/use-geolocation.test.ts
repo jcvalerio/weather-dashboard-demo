@@ -19,6 +19,13 @@ Object.defineProperty(global, 'navigator', {
 describe('useGeolocation Hook', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // Restore the mock geolocation for each test
+    Object.defineProperty(global, 'navigator', {
+      value: {
+        geolocation: mockGeolocation,
+      },
+      writable: true,
+    })
   })
 
   it('should have initial state', () => {
@@ -125,7 +132,11 @@ describe('useGeolocation Hook', () => {
       maximumAge: 600000,
     }
 
-    renderHook(() => useGeolocation(customOptions))
+    const { result } = renderHook(() => useGeolocation(customOptions))
+
+    act(() => {
+      result.current.getCurrentPosition()
+    })
 
     expect(mockGeolocation.getCurrentPosition).toHaveBeenCalledWith(
       expect.any(Function),
