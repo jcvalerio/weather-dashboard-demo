@@ -3,11 +3,8 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { WeatherIcon } from '@/components/weather/weather-icon';
 import { 
-  Cloud, 
-  CloudRain, 
-  Sun, 
-  Moon, 
   Wind, 
   Droplets, 
   Gauge, 
@@ -23,22 +20,6 @@ import { getWindDirection } from '@/lib/utils/weather';
 import { WEATHER_CONDITIONS } from '@/lib/constants/weather';
 import { cn } from '@/lib/utils';
 
-const getWeatherIcon = (condition: string, size = 24) => {
-  const iconProps = { size, className: 'text-current' };
-  
-  switch (condition) {
-    case 'clear-day':
-      return <Sun {...iconProps} />;
-    case 'clear-night':
-      return <Moon {...iconProps} />;
-    case 'partly-cloudy':
-      return <Cloud {...iconProps} />;
-    case 'rainy':
-      return <CloudRain {...iconProps} />;
-    default:
-      return <Cloud {...iconProps} />;
-  }
-};
 
 export function CurrentWeatherCard() {
   const { coordinates } = useLocationStore();
@@ -82,7 +63,7 @@ export function CurrentWeatherCard() {
     );
   }
 
-  if (error || !weather) {
+  if (error || !weather || !weather.current || !weather.location) {
     return (
       <Card className="p-6 h-full">
         <div className="flex items-center justify-between mb-4">
@@ -147,7 +128,7 @@ export function CurrentWeatherCard() {
       <div className="text-center mb-6">
         <div className={cn("inline-flex p-4 rounded-full mb-4", conditionStyle.bgColor)}>
           <div className={conditionStyle.color}>
-            {getWeatherIcon(weather.current.condition, 48)}
+            <WeatherIcon condition={weather.current.condition} size={48} />
           </div>
         </div>
         

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import type { Coordinates } from '@/types/weather';
 
 interface GeolocationState {
@@ -21,7 +21,7 @@ export function useGeolocation(options: GeolocationOptions = {}) {
   });
 
   const getCurrentPosition = useCallback(() => {
-    if (!navigator.geolocation) {
+    if (typeof navigator === 'undefined' || !navigator.geolocation) {
       setState(prev => ({
         ...prev,
         error: 'Geolocation is not supported by this browser',
@@ -72,16 +72,12 @@ export function useGeolocation(options: GeolocationOptions = {}) {
     );
   }, [options.enableHighAccuracy, options.timeout, options.maximumAge]);
 
-  useEffect(() => {
-    // Automatically get location on mount if coordinates are not set
-    if (!state.coordinates && !state.error) {
-      getCurrentPosition();
-    }
-  }, [state.coordinates, state.error, getCurrentPosition]);
+  // Removed automatic location fetching to make the hook more predictable
+  // Users should call getCurrentPosition() manually when they want to get location
 
   return {
     ...state,
     getCurrentPosition,
-    isSupported: 'geolocation' in navigator,
+    isSupported: typeof navigator !== 'undefined' && 'geolocation' in navigator,
   };
 }
