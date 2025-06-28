@@ -83,11 +83,16 @@ describe('Weather API Route', () => {
   })
 
   it('should return mock data when API key is missing', async () => {
-    // Mock missing API key
+    // Mock the constants to return empty API key
     vi.doMock('@/lib/constants/api', () => ({
       WEATHER_API_KEY: '',
       WEATHER_API_URL: 'https://api.openweathermap.org/data/2.5',
     }))
+
+    // Reset and re-import modules with empty API key
+    vi.resetModules()
+    const { weatherService } = await import('@/lib/api/weather-api')
+    const { GET } = await import('@/app/api/weather/route')
 
     const url = 'http://localhost:3000/api/weather?lat=37.7749&lon=-122.4194'
     const request = new NextRequest(url)
@@ -101,6 +106,10 @@ describe('Weather API Route', () => {
     expect(data).toHaveProperty('main')
     // Mock data should be returned
     expect(data.base).toBe('mock')
+    
+    // Restore the mock
+    vi.doUnmock('@/lib/constants/api')
+    vi.resetModules()
   })
 
   it('should handle API errors gracefully', async () => {

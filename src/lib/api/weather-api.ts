@@ -1,5 +1,6 @@
 import type { WeatherData, Coordinates } from '@/types/weather';
 import { mockCurrentWeather } from '@/lib/mocks/weather-data';
+import { WEATHER_API_KEY, WEATHER_API_URL } from '@/lib/constants/api';
 
 // Using OpenWeatherMap API structure
 interface OpenWeatherResponse {
@@ -129,21 +130,42 @@ function mapWeatherCondition(iconCode: string): 'clear-day' | 'clear-night' | 'p
 }
 
 class WeatherService {
-  private baseURL = 'https://api.openweathermap.org/data/2.5';
-  private apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
+  private baseURL = WEATHER_API_URL;
+  private apiKey = WEATHER_API_KEY;
 
-  async getCurrentWeather(coords: Coordinates): Promise<WeatherData> {
+  async getCurrentWeather(coords: Coordinates, options?: { returnRawFormat?: boolean }): Promise<WeatherData | OpenWeatherResponse> {
     // Always return mock data for now to ensure functionality
     console.log('Weather service called with coords:', coords);
     console.log('API key:', this.apiKey ? 'Present' : 'Missing');
     
-    // Return mock data (change this condition to test real API)
-    if (true || !this.apiKey || this.apiKey === '') {
+    // Return mock data when API key is not available
+    if (!this.apiKey || this.apiKey === '') {
       console.log('Using mock weather data');
+      
+      // If raw format is requested (for API route compatibility), return OpenWeatherMap format
+      if (options?.returnRawFormat) {
+        return this.getMockRawWeatherData(coords);
+      }
+      
       return mockCurrentWeather;
     }
 
     try {
+      // If raw format is requested, only fetch current weather
+      if (options?.returnRawFormat) {
+        const currentResponse = await fetch(
+          `${this.baseURL}/weather?lat=${coords.lat}&lon=${coords.lon}&appid=${this.apiKey}&units=metric`
+        );
+
+        if (!currentResponse.ok) {
+          throw new Error('Failed to fetch weather data');
+        }
+
+        const currentData: OpenWeatherResponse = await currentResponse.json();
+        return currentData;
+      }
+
+      // For transformed data, fetch both current and forecast
       const [currentResponse, forecastResponse] = await Promise.all([
         fetch(
           `${this.baseURL}/weather?lat=${coords.lat}&lon=${coords.lon}&appid=${this.apiKey}&units=metric`
@@ -163,7 +185,11 @@ class WeatherService {
       return this.transformWeatherData(currentData, forecastData);
     } catch (error) {
       console.error('Weather API error:', error);
-      // Fallback to mock data on error
+      // For API routes, throw the error to be handled by the route
+      // For client-side usage, return fallback data
+      if (options?.returnRawFormat) {
+        throw error;
+      }
       return mockCurrentWeather;
     }
   }
@@ -201,6 +227,37 @@ class WeatherService {
       console.error('Location search error:', error);
       return [];
     }
+  }
+
+  private getMockRawWeatherData(coords: Coordinates): OpenWeatherResponse {
+    return {
+      coord: { lon: coords.lon, lat: coords.lat },
+      weather: [{ id: 800, main: 'Clear', description: 'clear sky', icon: '01d' }],
+      base: 'mock',
+      main: {
+        temp: 72,
+        feels_like: 68,
+        temp_min: 65,
+        temp_max: 78,
+        pressure: 1013,
+        humidity: 65,
+      },
+      visibility: 10000,
+      wind: { speed: 12, deg: 270 },
+      clouds: { all: 0 },
+      dt: Math.floor(Date.now() / 1000),
+      sys: {
+        type: 2,
+        id: 2012516,
+        country: 'US',
+        sunrise: Math.floor(Date.now() / 1000) - 3600,
+        sunset: Math.floor(Date.now() / 1000) + 3600,
+      },
+      timezone: -25200,
+      id: 5391959,
+      name: 'San Francisco',
+      cod: 200,
+    };
   }
 
   private transformWeatherData(current: OpenWeatherResponse, forecast: ForecastResponse): WeatherData {

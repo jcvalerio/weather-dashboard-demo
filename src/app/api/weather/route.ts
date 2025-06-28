@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       lon: parseFloat(lon),
     };
 
-    const weatherData = await weatherService.getCurrentWeather(coordinates);
+    const weatherData = await weatherService.getCurrentWeather(coordinates, { returnRawFormat: true });
 
     return NextResponse.json(weatherData);
   } catch (error) {
